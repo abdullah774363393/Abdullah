@@ -533,8 +533,8 @@ class _StatusTab extends StatelessWidget {
   }
 }
 
-class _ContactsTab extends StatelessWidget { // Corrected class definition
-  const _ContactsTab({Key? key}) : super(key: key); // Added constructor for good practice
+class _ContactsTab extends StatelessWidget {
+  const _ContactsTab({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return ListView(
