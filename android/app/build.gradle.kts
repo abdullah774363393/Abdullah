@@ -24,6 +24,7 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        multiDexEnabled = true // ← لدعم أكثر من 64K method
     }
 
     buildTypes {
@@ -36,6 +37,11 @@ android {
                 file("proguard-rules.pro")
             )
         }
+    }
+
+    // دعم التوافقية مع مكتبة Play Core التي تسبب الأخطاء
+    packagingOptions {
+        resources.excludes.add("META-INF/*")
     }
 }
 
