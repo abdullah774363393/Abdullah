@@ -5,7 +5,8 @@
 -keep class io.flutter.view.** { *; }
 -keep class io.flutter.embedding.** { *; }
 
-# Firebase SDK rul
+# Firebase SDK rules
+# Firebase SDK rules
 -keep class com.google.firebase.** { *; }
 -keep class com.google.android.gms.** { *; }
 
