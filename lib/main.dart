@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(); // تهيئة Firebase
+import 'package:firebase_auth/firebase_auth await Firebase.initializeApp(); // تهيئة Firebase
   runApp(const MyApp());
 }
 
@@ -15,26 +11,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'تسجيل الدخول',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        fontFamily: 'Roboto',
-        primarySwatch: Colors.indigo,
-      ),
-      home: const AuthWrapper(),
-    );
-  }
-}
-
-// يتحقق هل المستخدم مسجل دخول مسبقًا
-class AuthWrapper extends StatelessWidget {
-  const AuthWrapper({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.active) {
+      debugShowCheckedModeBanner: {
           final user = snapshot.data;
           if (user == null) {
             return const LoginScreen();
@@ -52,24 +29,7 @@ class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  bool _loading = false;
-
-  void _login() async {
-    setState(() => _loading = true);
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text,
-      );
-    } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('خطأ في تسجيل الدخول: ${e.message}')),
+  State<LoginScreen> createState() => _Login(content: Text('خطأ في تسجيل الدخول: ${e.message}')),
       );
     } finally {
       setState(() => _loading = false);
@@ -84,12 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.indigo[50],
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
+),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -97,19 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 20),
               const Text(
                 'مرحبا بك',
-                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                'يرجى تسجيل الدخول للمتابعة',
-                style: TextStyle(fontSize: 16, color: Colors.black54),
-              ),
-              const SizedBox(height: 32),
-              TextField(
-                controller: _emailController,
-                decoration: InputDecoration(
-                  labelText: 'البريد الإلكتروني',
-                  prefixIcon: const Icon(Icons.email_outlined),
+                style: TextStyle(fontSize: 28, font),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                 ),
                 keyboardType: TextInputType.emailAddress,
@@ -119,35 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 controller: _passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
-                  labelText: 'كلمة المرور',
-                  prefixIcon: const Icon(Icons.lock_outline),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                ),
-              ),
-              const SizedBox(height: 10),
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const ForgotPasswordScreen()),
-                    );
-                  },
-                  child: const Text('نسيت كلمة المرور؟'),
-                ),
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                height: 48,
-                child: ElevatedButton(
-                  onPressed: _loading ? null : _login,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.indigo,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  ),
-                  child: _loading
+                  labelText:: _loading
                       ? const CircularProgressIndicator(color: Colors.white)
                       : const Text('تسجيل الدخول', style: TextStyle(fontSize: 18)),
                 ),
@@ -173,8 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
 
-  @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  @> createState() => _SignUpScreenState();
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
@@ -192,18 +106,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
       );
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('تم إنشاء الحساب بنجاح')),
-      );
-    } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('خطأ في إنشاء الحساب: ${e.message}')),
-      );
-    } finally {
-      setState(() => _loading = false);
-    }
-  }
-
-  @override
   void dispose() {
     _nameController.dispose();
     _emailController.dispose();
@@ -225,13 +127,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             children: [
               const Text(
                 'إنشاء حساب جديد',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 24),
-              TextField(
-                controller: _nameController,
-                decoration: InputDecoration(
-                  labelText: 'الاسم الكامل',
+                style: TextStyle(fontSize: 24, fontWeight:',
                   prefixIcon: const Icon(Icons.person),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                 ),
@@ -250,15 +146,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               TextField(
                 controller: _passwordController,
                 obscureText: true,
-                decoration: InputDecoration(
-                  labelText: 'كلمة المرور',
-                  prefixIcon: const Icon(Icons.lock),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                ),
-              ),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
+                decoration.infinity,
                 height: 48,
                 child: ElevatedButton(
                   onPressed: _loading ? null : _signUp,
@@ -267,33 +155,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
                   child: _loading
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text('إنشاء حساب', style: TextStyle(fontSize: 18)),
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context); // العودة لتسجيل الدخول
-                },
-                child: const Text('لديك حساب بالفعل؟ تسجيل الدخول'),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class ForgotPasswordScreen extends StatefulWidget {
-  const ForgotPasswordScreen({super.key});
-
-  @override
-  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
-}
-
-class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
+                      ? const CircularProgressIndicator(color: Colors.white extends State<ForgotPasswordScreen> {
   final _emailController = TextEditingController();
   bool _loading = false;
 
@@ -302,26 +164,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     try {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: _emailController.text.trim());
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك')),
-      );
-      Navigator.pop(context);
-    } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('خطأ: ${e.message}')),
-      );
-    } finally {
-      setState(() => _loading = false);
-    }
-  }
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+        const SnackBar(content: Text('تم إرسال build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('نسيت كلمة المرور')),
       body: Padding(
@@ -331,23 +174,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             const SizedBox(height: 40),
             const Text(
               'أدخل بريدك الإلكتروني لإرسال رابط إعادة تعيين كلمة المرور',
-              style: TextStyle(fontSize: 16),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 24),
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(
-                labelText: 'البريد الإلكتروني',
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                prefixIcon: const Icon(Icons.email),
-              ),
-              keyboardType: TextInputType.emailAddress,
-            ),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              height: 48,
+              style: TextStyle(fontSize:,
               child: ElevatedButton(
                 onPressed: _loading ? null : _sendResetEmail,
                 style: ElevatedButton.styleFrom(
@@ -370,12 +197,7 @@ class VerificationCodeScreen extends StatefulWidget {
   const VerificationCodeScreen({super.key});
 
   @override
-  State<VerificationCodeScreen> createState() => _VerificationCodeScreenState();
-}
-
-class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
-  final _codeController = TextEditingController();
-  bool _loading = false;
+  State<VerificationCode = false;
 
   void _verifyCode() async {
     setState(() => _loading = true);
@@ -392,15 +214,7 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
   void dispose() {
     _codeController.dispose();
     super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('كود التحقق')),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
+ child: Column(
           children: [
             const SizedBox(height: 40),
             const Text(
@@ -418,16 +232,159 @@ class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
               ),
               keyboardType: TextInputType.number,
             ),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              height: 48,
-              child: ElevatedButton(
-                onPressed: _loading ? null : _verifyCode,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.indigo,
+           .indigo,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
                 child: _loading
                     ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text('تحقق', style: TextStyle(fontSize:
+                    : const Text('تحقق', style: TextStyle(fontSize: 18)),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// شاشة رئيسية تشبه واتساب
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int _selectedIndex =  = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _tabs = [
+      _ChatsTab(),
+      _StatusTab(),
+      _ContactsTab(),
+    ];
+  }
+
+  void _onMenuSelected(String value) {
+    switch (value) {
+      case 'new_group':
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('ميزة إنشاء مجموعة جديدة قادمة قريبًا!')),
+        );
+        break;
+      case 'settings':
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('ميزة الإعدادات قادمة قريبًا!')),
+       ();
+        break;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        titleSpacing: 0,
+        title: Container(
+          height: 40,
+          decoration: BoxDecoration(
+            color: Colors.indigo[50],
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: TextField(
+            controller: _searchController,
+            decoration: InputDecoration(
+              hintText: 'بحث...',
+              border: InputBorder.none,
+              prefixIcon: const Icon(Icons.search),
+              contentPadding: const EdgeInsets.symmetric(vertical: 8', child: Text('مجموعة جديدة')),
+              const PopupMenuItem(
+                  value: 'settings', child: Text('الإعدادات')),
+              const PopupMenuItem(
+                  value: 'logout', child: Text('تسجيل خروج')),
+            ],
+          ),
+        ],
+      ),
+      body: _tabs[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.indigo,
+        unselectedItemColor: Colors.grey,
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+        items: const [
+ ),
+    );
+  }
+}
+
+// تبويب الدردشات
+class _ChatsTab extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // يمكنك ربطها مستقبلاً بقائمة دردشات حقيقية
+    return ListView(
+      padding: const EdgeInsets.all(8),
+      children: [
+        ListTile(
+          leading: CircleAvatar(child: Icon(Icons.person)),
+          title: Text('محمد أحمد'),
+          subtitle: Text('مرحبا! كيف حالك؟'),
+          trailing: Text('12:30 م'),
+        ),
+        ListTile(
+          leading: CircleAvatar(child: Icon(Icons('تم إرسال الملف 👍'),
+          trailing: Text('11:45 ص'),
+        ),
+        // أضف مزيد من الدردشات هنا
+      ],
+    );
+  }
+}
+
+// تبويب الحالة
+class _StatusTab extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // يمكنك ربطها مستقبلاً بحالات حقيقية
+    return ListView(
+      padding: const EdgeInsets.all(8),
+      children: [
+        ListTile(
+          leading: CircleAvatar(child: Icon(Icons.person)),
+          title: Text('حالتك'),
+          subtitle: Text('اضغط لإضافة حالة ],
+    );
+  }
+}
+
+// تبويب جهات الاتصال
+class _ContactsTab extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // يمكنك ربطها مستقبلاً بجهات اتصال حقيقية
+    return ListView(
+      padding: const EdgeInsets.all(8),
+      children: [
+        ListTile(
+          leading: CircleAvatar(child: Icon(Icons.person)),
+          title: Text('محمد أحمد'),
+          subtitle: Text('أونلاين'),
+        ),
+        ListTile(
+          leading: CircleAvatar(child: Icon(Icons.person)),
+          title: Text('سارة علي'),
+          subtitle: Text('آخر ظهور: أمس'),
+        ),
+        // أضف مزيد من جهات الاتصال هنا
+      ],
+    );
+  }
+}
