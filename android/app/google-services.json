@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "271368230866",
+    "project_id": "dart-599bc",
+    "storage_bucket": "dart-599bc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:271368230866:android:71c0288b74fb44ea6f5a0b",
+        "android_client_info": {
+          "package_name": "com.example.abdullah"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGTz0YV_Wzy-tKwzoKE05PpCym6RGDDZg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
