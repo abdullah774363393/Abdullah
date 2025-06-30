@@ -67,7 +67,6 @@ class _LoginScreenState extends State<LoginScreen> {
         email: _emailController.text.trim(),
         password: _passwordController.text,
       );
-      // سيتم التوجيه تلقائيًا عبر StreamBuilder في AuthWrapper
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('خطأ في تسجيل الدخول: ${e.message}')),
@@ -130,7 +129,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () {
-                    // يمكنك إضافة وظيفة استعادة كلمة المرور هنا
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const ForgotPasswordScreen()),
+                    );
                   },
                   child: const Text('نسيت كلمة المرور؟'),
                 ),
@@ -188,7 +190,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
         email: _emailController.text.trim(),
         password: _passwordController.text,
       );
-      // يمكنك حفظ الاسم في قاعدة بيانات لاحقًا إذا أردت
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('تم إنشاء الحساب بنجاح')),
@@ -285,76 +286,148 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 }
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class ForgotPasswordScreen extends StatefulWidget {
+  const ForgotPasswordScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
-  late TabController _tabController;
+class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
+  final _emailController = TextEditingController();
+  bool _loading = false;
 
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+  void _sendResetEmail() async {
+    setState(() => _loading = true);
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: _emailController.text.trim());
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك')),
+      );
+      Navigator.pop(context);
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('خطأ: ${e.message}')),
+      );
+    } finally {
+      setState(() => _loading = false);
+    }
   }
 
   @override
   void dispose() {
-    _tabController.dispose();
+    _emailController.dispose();
     super.dispose();
-  }
-
-  void _onMenuSelected(String value) {
-    switch (value) {
-      case 'new_group':
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('إنشاء مجموعة جديدة')),
-        );
-        break;
-      case 'settings':
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('فتح الإعدادات')),
-        );
-        break;
-      case 'logout':
-        FirebaseAuth.instance.signOut();
-        break;
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('وتسبني'),
-        actions: [
-          PopupMenuButton<String>(
-            onSelected: _onMenuSelected,
-            itemBuilder: (context) => [
-              const PopupMenuItem(value: 'new_group', child: Text('مجموعة جديدة')),
-              const PopupMenuItem(value: 'settings', child: Text('الإعدادات')),
-              const PopupMenuItem(value: 'logout', child: Text('تسجيل الخروج')),
-            ],
-          ),
-        ],
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: const [
-            Tab(text: 'المحادثات'),
-            Tab(text: 'الحالة'),
+      appBar: AppBar(title: const Text('نسيت كلمة المرور')),
+      body: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          children: [
+            const SizedBox(height: 40),
+            const Text(
+              'أدخل بريدك الإلكتروني لإرسال رابط إعادة تعيين كلمة المرور',
+              style: TextStyle(fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            TextField(
+              controller: _emailController,
+              decoration: InputDecoration(
+                labelText: 'البريد الإلكتروني',
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                prefixIcon: const Icon(Icons.email),
+              ),
+              keyboardType: TextInputType.emailAddress,
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: ElevatedButton(
+                onPressed: _loading ? null : _sendResetEmail,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.indigo,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                child: _loading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text('إرسال', style: TextStyle(fontSize: 18)),
+              ),
+            ),
           ],
         ),
-      ),
-      body: TabBarView(
-        controller: _tabController,
-        children: const [
-          Center(child: Text('لا توجد محادثات بعد')),
-          Center(child: Text('لا توجد حالات حالياً')),
-        ],
       ),
     );
   }
 }
+
+class VerificationCodeScreen extends StatefulWidget {
+  const VerificationCodeScreen({super.key});
+
+  @override
+  State<VerificationCodeScreen> createState() => _VerificationCodeScreenState();
+}
+
+class _VerificationCodeScreenState extends State<VerificationCodeScreen> {
+  final _codeController = TextEditingController();
+  bool _loading = false;
+
+  void _verifyCode() async {
+    setState(() => _loading = true);
+    // هنا ضع كود التحقق المناسب (مثلاً تحقق من الكود مع سيرفر أو Firebase)
+    await Future.delayed(const Duration(seconds: 2)); // محاكاة انتظار
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('تم التحقق بنجاح (تجريبي)')),
+    );
+    setState(() => _loading = false);
+    Navigator.pop(context);
+  }
+
+  @override
+  void dispose() {
+    _codeController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('كود التحقق')),
+      body: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          children: [
+            const SizedBox(height: 40),
+            const Text(
+              'أدخل كود التحقق الذي وصلك',
+              style: TextStyle(fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            TextField(
+              controller: _codeController,
+              decoration: InputDecoration(
+                labelText: 'كود التحقق',
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                prefixIcon: const Icon(Icons.vpn_key),
+              ),
+              keyboardType: TextInputType.number,
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: ElevatedButton(
+                onPressed: _loading ? null : _verifyCode,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.indigo,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                child: _loading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text('تحقق', style: TextStyle(fontSize:
