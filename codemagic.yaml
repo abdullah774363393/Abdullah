@@ -3,8 +3,7 @@ workflows:
     name: Build Flutter APK (Optimized)
     environment:
       flutter: stable
-      android_signing:
-        - keystore_reference
+
     scripts:
       - name: Get dependencies
         script: flutter pub get
