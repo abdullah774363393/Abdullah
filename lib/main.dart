@@ -183,12 +183,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-      // اختياري: تحديث اسم عرض المستخدم بعد الإنشاء
+      // Optional: Update user display name after creation
       await FirebaseAuth.instance.currentUser?.updateDisplayName(_nameController.text.trim());
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('تم إنشاء الحساب بنجاح')),
       );
-      Navigator.pop(context); // العودة إلى شاشة تسجيل الدخول بعد التسجيل الناجح
+      Navigator.pop(context); // Go back to login screen after successful signup
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('خطأ في إنشاء الحساب: ${e.message}')),
@@ -494,7 +494,7 @@ class _ChatsTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       padding: const EdgeInsets.all(8),
-      children: const [ // تم التغيير إلى const لأن العناصر ثابتة
+      children: const [
         ListTile(
           leading: CircleAvatar(child: Icon(Icons.person)),
           title: Text('محمد أحمد'),
@@ -517,7 +517,7 @@ class _StatusTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       padding: const EdgeInsets.all(8),
-      children: const [ // تم التغيير إلى const
+      children: const [
         ListTile(
           leading: CircleAvatar(child: Icon(Icons.person)),
           title: Text('أحمد'),
@@ -533,12 +533,13 @@ class _StatusTab extends StatelessWidget {
   }
 }
 
-class _ContactsTab extends StatelessWidget {
+class _ContactsTab extends StatelessWidget { // Corrected class definition
+  const _ContactsTab({Key? key}) : super(key: key); // Added constructor for good practice
   @override
   Widget build(BuildContext context) {
     return ListView(
       padding: const EdgeInsets.all(8),
-      children: const [ // تم التغيير إلى const
+      children: const [
         ListTile(
           leading: CircleAvatar(child: Icon(Icons.person)),
           title: Text('محمد أحمد'),
