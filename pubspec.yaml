@@ -1,0 +1,41 @@
+name: abdullah
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.8.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+  # ✅ أحدث نسخ Firebase
+  firebase_core: ^3.14.0
+  firebase_auth: ^5.6.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  # ✅ تحديث حزمة اللينت
+  flutter_lints: ^6.0.0
+
+flutter:
+
+  uses-material-design: true
+
+  # ✅ يمكنك إضافة الصور هنا لاحقًا إن وجدت
+  # assets:
+  #   - assets/images/
+
+  # ✅ إضافة خطوط (مثال)
+  # fonts:
+  #   - family: Roboto
+  #     fonts:
+  #       - asset: fonts/Roboto-Regular.ttf
+  #       - asset: fonts/Roboto-Bold.ttf
+  #         weight: 700
