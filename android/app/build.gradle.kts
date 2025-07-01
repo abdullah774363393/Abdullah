@@ -9,7 +9,8 @@ plugins {
 }
 
 android {
-    namespace = "com.abdullahabdullah.abdullah_new" // تم التعديل هنا
+    // تأكد أن 'namespace' يتطابق مع اسم الحزمة في مشروعك
+    namespace = "com.example.abdullah_new" // تم التعديل إلى الاسم الأصلي
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "27.0.12077973"
 
@@ -23,7 +24,8 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.abdullahabdullah.abdullah_new" // تم التعديل هنا
+        // تأكد أن 'applicationId' يتطابق مع اسم الحزمة في مشروعك
+        applicationId = "com.example.abdullah_new" // تم التعديل إلى الاسم الأصلي
         minSdk = 23
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
