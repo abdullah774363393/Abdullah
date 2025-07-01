@@ -1,16 +1,15 @@
 plugins {
     id("com.android.application")
     // START: FlutterFire Configuration
-    id("com.google.gms.google-services")
+    id("com.google.gms.google-services") // هذا هو التضمين الوحيد المطلوب
     // END: FlutterFire Configuration
     id("kotlin-android")
     id("dev.flutter.flutter-gradle-plugin")
-    id("com.google.gms.google-services") // ✅ تم إضافته هنا
+    // تمت إزالة السطر المكرر لـ 'id("com.google.gms.google-services")' من هنا
 }
 
 android {
-    // تأكد أن 'namespace' يتطابق مع اسم الحزمة في مشروعك
-    namespace = "com.example.abdullah_new" // تم التعديل إلى الاسم الأصلي
+    namespace = "com.example.abdullah_new"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "27.0.12077973"
 
@@ -24,8 +23,7 @@ android {
     }
 
     defaultConfig {
-        // تأكد أن 'applicationId' يتطابق مع اسم الحزمة في مشروعك
-        applicationId = "com.example.abdullah_new" // تم التعديل إلى الاسم الأصلي
+        applicationId = "com.example.abdullah_new"
         minSdk = 23
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
