@@ -1,32 +1,13 @@
 {
   "project_info": {
-    "project_number": "271368230866",
-    "project_id": "dart-599bc",
-    "storage_bucket": "dart-599bc.firebasestorage.app"
+    "project_number": "904195856271",
+    "project_id": "abdullahabdullah",
+    "storage_bucket": "abdullahabdullah.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:271368230866:android:71c0288b74fb44ea6f5a0b",
-        "android_client_info": {
-          "package_name": "com.example.abdullah"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAGTz0YV_Wzy-tKwzoKE05PpCym6RGDDZg"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:271368230866:android:9d1925a3b01dbb916f5a0b",
+        "mobilesdk_app_id": "1:904195856271:android:bb7a65c499b604da035dfa",
         "android_client_info": {
           "package_name": "com.example.abdullah_new"
         }
@@ -34,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAGTz0YV_Wzy-tKwzoKE05PpCym6RGDDZg"
+          "current_key": "AIzaSyALmc_EdO6vB810I5g1LZHhN5_z9QNz_kA"
         }
       ],
       "services": {
