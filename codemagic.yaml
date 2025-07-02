@@ -5,79 +5,57 @@ workflows:
   android-build:
     name: Android APK Build & Publish
     # تحديد الفروع التي ستؤدي إلى تشغيل هذا الـ workflow عند أي تغيير
-    # يمكنك تعديل 'main' ليشمل فروع أخرى مثل 'development'
+    # تم تبسيط قسم trigger:
     trigger:
-      branch:
-        - main
+      branch_patterns:
+        - pattern: 'main'
+          include: true
 
     # مجموعة بيئة البناء
     environment:
+      # تم إزالة 'jdk' من هنا لأنها غالباً ما تُحدد في إعدادات Workflow في واجهة Codemagic
+      # أو يتم التعامل معها تلقائيًا بواسطة Flutter/Gradle.
       flutter: stable
-      # إصدار JDK (Java Development Kit) المطلوب لبناء أندرويد
-      # يمكنك تغيير هذا الإصدار إذا كانت لديك متطلبات محددة
-      jdk: 17
-      # قم بتضمين أي متغيرات بيئة تحتاجها هنا.
-      # مثال: keystore_password: ENCRYPTED_KEYSTORE_PASSWORD
-      # هذه المتغيرات يتم تعريفها في إعدادات مشروعك في Codemagic UI.
-      # group: android_vars # يمكنك تجميع المتغيرات في Codemagic UI
-
-    # المتغيرات السرية (secrets) يجب أن تُعرّف في Codemagic UI (Environment Variables)
-    # ثم يتم ربطها هنا. هذا لمنع وضع المعلومات الحساسة في الكود.
-    # مثال:
-    # variables:
-    #   CM_KEYSTORE: Encrypted # اسم المتغير في Codemagic
-    #   CM_KEYSTORE_PASSWORD: Encrypted
-    #   CM_KEY_ALIAS: Encrypted
-    #   CM_KEY_PASSWORD: Encrypted
-    #   CM_GPLAY_SERVICE_ACCOUNT_CREDENTIALS: Encrypted
+      # يمكنك إضافة أي متغيرات بيئة تحتاجها هنا، مع تحديدها في Codemagic UI كـ "secrets"
+      # group: android_vars
 
     # النص البرمجي الذي يتم تنفيذه قبل خطوات البناء
-    # يستخدم هذا عادةً لتثبيت أدوات إضافية أو إعدادات أولية
     scripts:
       - name: Set Flutter version
-        # هذا يضمن استخدام إصدار Flutter المستقر. يمكنك تحديده لـ "3.19.0" مثلاً
-        # إذا كنت تريد إصدارًا محددًا
         script: |
           flutter channel stable
           flutter upgrade
           flutter doctor -v
 
       - name: Get Flutter dependencies
-        # جلب جميع المكتبات والاعتماديات من pubspec.yaml
         script: |
           flutter pub get
 
       - name: Build Android APK
-        # بناء نسخة APK
         script: |
           flutter build apk --release \
             --target-platform android-arm64 \
             --target-platform android-arm \
             --target-platform android-x64 \
-            --split-per-abi # هذا سينشئ ملف APK منفصل لكل بنية (arm64, arm, x64)
-          # إذا كنت تريد ملف APK واحدًا فقط (أكبر حجمًا) لجميع البنيات، احذف --split-per-abi
+            --split-per-abi
 
     # خطوات ما بعد البناء (Post-build steps)
     artifacts:
       # تحديد مكان ملفات البناء التي سيتم حفظها
-      - app/build/app/outputs/flutter-apk/**/*.apk # هذا المسار لملفات APK
+      - app/build/app/outputs/flutter-apk/**/*.apk
 
     # خطوات النشر (Publishing)
-    # هذا الجزء سيقوم بنشر تطبيقك تلقائياً إلى متجر Google Play
-    # يتطلب إعداد بيانات اعتماد حساب خدمة Google Play في Codemagic UI.
     publishing:
+      # codemagic: # تم إزالة 'codemagic' كحقل فرعي مباشر هنا
+      # notifications: # يمكنك إضافة الإشعارات على مستوى الـ workflow مباشرة
+      #   email:
+      #     - your_email@example.com
+      #     success: true
+      #     failure: true
+
+      # لتمكين النشر إلى Google Play، قم بإلغاء تعليق الأسطر التالية
+      # وتأكد من إعداد بيانات الاعتماد في Codemagic UI
       # google_play:
       #   track: internal # أو 'beta' أو 'production'
-      #   serviceAccountCredentials: $CM_GPLAY_SERVICE_ACCOUNT_CREDENTIALS # متغير سري من Codemagic UI
-      #   releaseStatus: completed # أو 'draft', 'inProgress'
-
-      # النشر إلى Codemagic Builds (لمشاهدة الملفات التي تم بناؤها)
-      # هذا مفيد للاختبار وتنزيل APK/AAB مباشرة من Codemagic
-      codemagic:
-        # يمكنك هنا تعيين إشعارات البريد الإلكتروني
-        # notifications:
-        #   email:
-        #     - your_email@example.com
-        #     - another_email@example.com
-        #     success: true
-        #     failure: true
+      #   serviceAccountCredentials: $CM_GPLAY_SERVICE_ACCOUNT_CREDENTIALS
+      #   releaseStatus: completed
