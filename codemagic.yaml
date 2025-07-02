@@ -1,27 +1,33 @@
 # codemagic.yaml
-# هذا الملف يصف خطوات البناء والنشر لتطبيق Flutter باستخدام Codemagic CI/CD.
+# This file defines the CI/CD workflow for your Flutter app on Codemagic.
 
 workflows:
-  android-build:
-    name: Android APK Build & Publish
-    # تحديد الفروع التي ستؤدي إلى تشغيل هذا الـ workflow عند أي تغيير
-    # تم تبسيط قسم trigger:
+  android-apk-build: # Changed workflow name slightly for clarity
+    name: Android APK Build
+    
+    # Define branches that trigger this workflow
+    # This simplified syntax is usually more robust.
     trigger:
+      # Build on pushes to the 'main' branch
       branch_patterns:
         - pattern: 'main'
           include: true
 
-    # مجموعة بيئة البناء
+    # Environment setup for the build
     environment:
-      # تم إزالة 'jdk' من هنا لأنها غالباً ما تُحدد في إعدادات Workflow في واجهة Codemagic
-      # أو يتم التعامل معها تلقائيًا بواسطة Flutter/Gradle.
+      # Use the stable Flutter channel
       flutter: stable
-      # يمكنك إضافة أي متغيرات بيئة تحتاجها هنا، مع تحديدها في Codemagic UI كـ "secrets"
-      # group: android_vars
+      # No explicit 'jdk' here. Codemagic handles this automatically
+      # or it can be configured in the UI for specific needs.
+      
+      # Define any environment variables if needed.
+      # Variables marked as sensitive (like API keys, passwords)
+      # should be defined in Codemagic UI and referenced here.
+      # Example: CM_KEYSTORE_PASSWORD: Encrypted
 
-    # النص البرمجي الذي يتم تنفيذه قبل خطوات البناء
+    # Scripts to run during the build process
     scripts:
-      - name: Set Flutter version
+      - name: Set Flutter version and doctor
         script: |
           flutter channel stable
           flutter upgrade
@@ -37,25 +43,27 @@ workflows:
             --target-platform android-arm64 \
             --target-platform android-arm \
             --target-platform android-x64 \
-            --split-per-abi
+            --split-per-abi # Creates separate APKs for each architecture (smaller downloads)
 
-    # خطوات ما بعد البناء (Post-build steps)
+    # Define build artifacts to save (your APKs)
     artifacts:
-      # تحديد مكان ملفات البناء التي سيتم حفظها
       - app/build/app/outputs/flutter-apk/**/*.apk
 
-    # خطوات النشر (Publishing)
+    # Publishing settings
     publishing:
-      # codemagic: # تم إزالة 'codemagic' كحقل فرعي مباشر هنا
-      # notifications: # يمكنك إضافة الإشعارات على مستوى الـ workflow مباشرة
-      #   email:
-      #     - your_email@example.com
-      #     success: true
-      #     failure: true
-
-      # لتمكين النشر إلى Google Play، قم بإلغاء تعليق الأسطر التالية
-      # وتأكد من إعداد بيانات الاعتماد في Codemagic UI
+      # If you want to publish to Google Play directly:
+      # You need to configure service account credentials in Codemagic UI first.
       # google_play:
-      #   track: internal # أو 'beta' أو 'production'
+      #   track: internal # or 'beta', 'production'
       #   serviceAccountCredentials: $CM_GPLAY_SERVICE_ACCOUNT_CREDENTIALS
       #   releaseStatus: completed
+
+      # Codemagic builds are automatically available in the Codemagic UI for download.
+      # No specific 'codemagic' block is typically needed under 'publishing'.
+      
+      # Optional: Email notifications for build status
+      # email:
+      #   recipients:
+      #     - your_email@example.com
+      #   success: true
+      #   failure: true
