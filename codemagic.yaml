@@ -1,69 +1,51 @@
 # codemagic.yaml
-# This file defines the CI/CD workflow for your Flutter app on Codemagic.
+# CI/CD configuration for Flutter app using Codemagic
 
 workflows:
-  android-apk-build: # Changed workflow name slightly for clarity
+  android-apk-build:
     name: Android APK Build
-    
-    # Define branches that trigger this workflow
-    # This simplified syntax is usually more robust.
+
     trigger:
-      # Build on pushes to the 'main' branch
       branch_patterns:
-        - pattern: 'main'
+        - pattern: main
           include: true
 
-    # Environment setup for the build
     environment:
-      # Use the stable Flutter channel
       flutter: stable
-      # No explicit 'jdk' here. Codemagic handles this automatically
-      # or it can be configured in the UI for specific needs.
-      
-      # Define any environment variables if needed.
-      # Variables marked as sensitive (like API keys, passwords)
-      # should be defined in Codemagic UI and referenced here.
-      # Example: CM_KEYSTORE_PASSWORD: Encrypted
+      # Define sensitive environment variables in Codemagic UI
+      # Example: CM_KEYSTORE_PASSWORD, CM_GPLAY_SERVICE_ACCOUNT_CREDENTIALS
 
-    # Scripts to run during the build process
     scripts:
-      - name: Set Flutter version and doctor
+      - name: Set Flutter channel and run doctor
         script: |
           flutter channel stable
           flutter upgrade
           flutter doctor -v
 
-      - name: Get Flutter dependencies
+      - name: Get dependencies
         script: |
           flutter pub get
 
-      - name: Build Android APK
+      - name: Build APK (split per ABI)
         script: |
           flutter build apk --release \
-            --target-platform android-arm64 \
-            --target-platform android-arm \
-            --target-platform android-x64 \
-            --split-per-abi # Creates separate APKs for each architecture (smaller downloads)
+            --target-platform android-arm,android-arm64,android-x64 \
+            --split-per-abi
 
-    # Define build artifacts to save (your APKs)
     artifacts:
-      - app/build/app/outputs/flutter-apk/**/*.apk
+      - build/app/outputs/flutter-apk/**/*.apk
 
-    # Publishing settings
     publishing:
-      # If you want to publish to Google Play directly:
-      # You need to configure service account credentials in Codemagic UI first.
+      # Enable this section if publishing to Google Play
       # google_play:
-      #   track: internal # or 'beta', 'production'
+      #   track: internal
       #   serviceAccountCredentials: $CM_GPLAY_SERVICE_ACCOUNT_CREDENTIALS
       #   releaseStatus: completed
 
-      # Codemagic builds are automatically available in the Codemagic UI for download.
-      # No specific 'codemagic' block is typically needed under 'publishing'.
-      
-      # Optional: Email notifications for build status
+      # Optional email notifications
       # email:
       #   recipients:
-      #     - your_email@example.com
-      #   success: true
-      #   failure: true
+      #     - you@example.com
+      #   notify:
+      #     success: true
+      #     failure: true
