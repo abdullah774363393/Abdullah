@@ -1,51 +1,21 @@
-# codemagic.yaml
-# CI/CD configuration for Flutter app using Codemagic
-
 workflows:
-  android-apk-build:
-    name: Android APK Build
+  build-android-apk:
+    name: Build Android APK
 
     trigger:
       branch_patterns:
-        - pattern: main
+        - pattern: '*'
           include: true
 
     environment:
       flutter: stable
-      # Define sensitive environment variables in Codemagic UI
-      # Example: CM_KEYSTORE_PASSWORD, CM_GPLAY_SERVICE_ACCOUNT_CREDENTIALS
 
     scripts:
-      - name: Set Flutter channel and run doctor
-        script: |
-          flutter channel stable
-          flutter upgrade
-          flutter doctor -v
+      - name: تثبيت الاعتمادات
+        script: flutter pub get
 
-      - name: Get dependencies
-        script: |
-          flutter pub get
-
-      - name: Build APK (split per ABI)
-        script: |
-          flutter build apk --release \
-            --target-platform android-arm,android-arm64,android-x64 \
-            --split-per-abi
+      - name: بناء ملف APK
+        script: flutter build apk --release --split-per-abi
 
     artifacts:
-      - build/app/outputs/flutter-apk/**/*.apk
-
-    publishing:
-      # Enable this section if publishing to Google Play
-      # google_play:
-      #   track: internal
-      #   serviceAccountCredentials: $CM_GPLAY_SERVICE_ACCOUNT_CREDENTIALS
-      #   releaseStatus: completed
-
-      # Optional email notifications
-      # email:
-      #   recipients:
-      #     - you@example.com
-      #   notify:
-      #     success: true
-      #     failure: true
+      - build/app/outputs/flutter-apk/*.apk
